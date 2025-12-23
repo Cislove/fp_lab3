@@ -5,8 +5,6 @@ defmodule FpLab3.Utils.Parser do
 
   @separator ";"
 
-  @methods ["linear", "lagrange3", "lagrange4", "newton"]
-
   @spec parse_input(input:: String.t()) :: {atom(), {any(), any()}} | atom()
   def parse_input(input) do
     case String.split(input, @separator) do
@@ -35,7 +33,11 @@ defmodule FpLab3.Utils.Parser do
   end
 
   defp parse_cli_arg("methods" <> method, acc) do
-    {:cont, Map.put(acc, :methods, String.split(String.trim(method), " "))}
+    methods = Enum.map(String.split(String.trim(method), " "),
+                fn module -> Module.concat(["FpLab3", "Interpolators", "#{String.capitalize(module)}Interpolation"])
+                end)
+
+    {:cont, Map.put(acc, :methods, methods)}
   end
 
   defp parse_cli_arg("step" <> step, acc) do
