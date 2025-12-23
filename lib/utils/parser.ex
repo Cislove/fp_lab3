@@ -16,7 +16,7 @@ defmodule FpLab3.Utils.Parser do
 
           {:ok, {x, y}}
         else
-          _ -> :error
+          _ -> :float_parse_error
         end
 
       _ -> :error
