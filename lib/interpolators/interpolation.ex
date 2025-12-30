@@ -3,6 +3,7 @@ defmodule FpLab3.Interpolators.Interpolation do
   @callback interpolate(points :: [tuple()], target_point :: number()) :: number()
   @callback get_name() :: binary()
   @callback get_points_enough() :: number()
+  @callback can_many_points?() :: boolean()
 
   defmacro __using__(_) do
     quote do

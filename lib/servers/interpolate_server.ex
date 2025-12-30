@@ -19,9 +19,6 @@ defmodule FpLab3.Servers.InterpolateServer do
 
   @impl true
   def handle_cast({:apply_point, point}, {points, config}) do
-    # require IEx
-    # IEx.pry()
-
     case Parser.parse_input(point) do
       :error -> handle_error_input("Необходимо вводить координаты в формате: {x y}", {points, config})
 
@@ -55,7 +52,7 @@ defmodule FpLab3.Servers.InterpolateServer do
         case handle_method(method, new_points, config) do
           :nothing -> :nothing
 
-          result -> send(__MODULE__, {:interpolation_result, method.get_name(), result})
+          result -> send(__MODULE__, {:interpolation_result, method.get_name, result})
         end
       end)
     end)
@@ -64,11 +61,11 @@ defmodule FpLab3.Servers.InterpolateServer do
   end
 
   defp handle_method(method, points, config) do
-    if(length(points) >= method.get_points_enough()) do
-      know_points = Enum.take(points, 0 - method.get_points_enough())
+    if(length(points) >= method.get_points_enough) do
+      know_points = Enum.take(points, 0 - method.get_points_enough)
       xs = generate_points(List.first(know_points), List.last(know_points), config.step)
 
-      method.interpolate(know_points, xs)
+      method.interpolate.(know_points, xs)
     else
       :nothing
     end

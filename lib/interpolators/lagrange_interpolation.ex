@@ -9,6 +9,9 @@ defmodule FpLab3.Interpolators.LagrangeInterpolation do
   def get_points_enough(), do: 4
 
   @impl true
+  def can_many_points?(), do: false
+
+  @impl true
   def interpolate(points, x) when not is_list(x) do
     y = Enum.reduce(Enum.with_index(points), 0.0, fn {{xi, yi}, i}, acc ->
       li = Enum.reduce(Enum.with_index(points), 1.0, fn {{xj, _}, j}, l_acc ->

@@ -9,6 +9,9 @@ defmodule FpLab3.Interpolators.LinealInterpolation do
   def get_points_enough(), do: 2
 
   @impl true
+  def can_many_points?(), do: false
+
+  @impl true
   def interpolate(points, x) when not is_list(x) do
     [{x0, y0}, {x1, y1}] = points
 
