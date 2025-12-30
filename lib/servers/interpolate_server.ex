@@ -65,17 +65,17 @@ defmodule FpLab3.Servers.InterpolateServer do
     Task.start(fn ->
       case handle_method(method, points, config) do
         :nothing -> :nothing
-        result -> send(__MODULE__, {:interpolation_result, method.get_name, result})
+        result -> send(__MODULE__, {:interpolation_result, method.get_name(), result})
       end
     end)
   end
 
   defp handle_method(method, points, config) do
-    if length(points) >= method.get_points_enough do
-      know_points = Enum.take(points, 0 - method.get_points_enough)
+    if length(points) >= method.get_points_enough() do
+      know_points = Enum.take(points, 0 - method.get_points_enough())
       xs = generate_points(List.first(know_points), List.last(know_points), config.step)
 
-      method.interpolate.(know_points, xs)
+      method.interpolate(know_points, xs)
     else
       :nothing
     end
