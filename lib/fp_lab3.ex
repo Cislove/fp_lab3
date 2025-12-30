@@ -3,7 +3,6 @@ defmodule FpLab3 do
   alias FpLab3.Application
 
   def main(args) do
-    IO.inspect(args, label: "CLI arguments")
     case Parser.parse_cli_args(args) do
       :help -> Printer.help()
 

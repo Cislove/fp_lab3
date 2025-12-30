@@ -3,7 +3,11 @@ defmodule FpLab3.Utils.Printer do
 
   #TODO: дописать хелп
   def help() do
-    IO.puts("Какой то хелп")
+    IO.puts("CLI программа для интерполяции. Используйте параметры для запуска:")
+    IO.puts("--method={перечесление методов, либо один метод}. Пример: --method=Lineal,Lagrange")
+    IO.puts("--step={шаг}. Пример: --step=0.5")
+    IO.puts("--help - справка")
+    IO.puts("Указание метода и шага обязательное")
   end
 
   def start() do
