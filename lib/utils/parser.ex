@@ -35,7 +35,7 @@ defmodule FpLab3.Utils.Parser do
   end
 
   defp parse_cli_arg("--methods=" <> method, acc) do
-    methods = Enum.map(String.split(String.trim(method), " "),
+    methods = Enum.map(String.split(String.trim(method), ","),
                 fn module -> Module.concat(["FpLab3", "Interpolators", "#{String.capitalize(module)}Interpolation"])
                 end)
 
