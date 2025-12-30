@@ -1,0 +1,32 @@
+name: fp_lab2_ci
+
+on: [push, pull_request]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.18
+          otp-version: 27
+      - name: Install dependencies
+        run: mix local.hex --force && mix local.rebar --force
+
+
+      - name: Check format
+        run: |
+          mix deps.get
+          mix format --check-formatted
+
+      - name: Lint 
+        run: |
+          mix deps.get
+          mix credo --strict
+
+      - name: Test
+        run: |
+          mix deps.get
+          mix test
