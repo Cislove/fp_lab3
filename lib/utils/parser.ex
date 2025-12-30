@@ -3,7 +3,7 @@ defmodule FpLab3.Utils.Parser do
   Различные функции валидации
   """
 
-  @separator ";"
+  @separator " "
 
   @spec parse_input(input:: String.t()) :: {atom(), {any(), any()}} | atom()
   def parse_input(input) do
@@ -19,6 +19,8 @@ defmodule FpLab3.Utils.Parser do
 
       _ -> :error
     end
+    # require IEx
+    # IEx.pry()
   end
 
   @spec parse_cli_args(args :: [String.t()]) :: %{optional(atom()) => any()}
@@ -32,7 +34,7 @@ defmodule FpLab3.Utils.Parser do
     end)
   end
 
-  defp parse_cli_arg("methods" <> method, acc) do
+  defp parse_cli_arg("--methods=" <> method, acc) do
     methods = Enum.map(String.split(String.trim(method), " "),
                 fn module -> Module.concat(["FpLab3", "Interpolators", "#{String.capitalize(module)}Interpolation"])
                 end)
@@ -40,11 +42,12 @@ defmodule FpLab3.Utils.Parser do
     {:cont, Map.put(acc, :methods, methods)}
   end
 
-  defp parse_cli_arg("step" <> step, acc) do
-    {:cont, Map.put(acc, :step, String.trim(step))}
+  defp parse_cli_arg("--step=" <> step, acc) do
+    {step_value, _} = Float.parse(String.trim(step))
+    {:cont, Map.put(acc, :step, step_value)}
   end
 
-  defp parse_cli_arg("help", _) do
+  defp parse_cli_arg("--help", _) do
     {:halt, :help}
   end
 end

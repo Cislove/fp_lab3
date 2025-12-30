@@ -5,7 +5,7 @@ defmodule FpLab3.Servers.InterpolateServer do
   alias FpLab3.Utils.{Parser}
 
   def start_link(config) do
-    GenServer.start_link(__MODULE__, {config}, name: __MODULE__)
+    GenServer.start_link(__MODULE__, {[], config}, name: __MODULE__)
   end
 
   def apply_point(point) do
@@ -19,12 +19,15 @@ defmodule FpLab3.Servers.InterpolateServer do
 
   @impl true
   def handle_cast({:apply_point, point}, {points, config}) do
+    # require IEx
+    # IEx.pry()
+
     case Parser.parse_input(point) do
       :error -> handle_error_input("Необходимо вводить координаты в формате: {x y}", {points, config})
 
       :float_parse_error -> handle_error_input("Координаты должны быть числами", {points, config})
 
-      point -> proccess_new_point(point, {points, config})
+      {:ok, point} -> proccess_new_point(point, {points, config})
     end
   end
 
@@ -41,11 +44,11 @@ defmodule FpLab3.Servers.InterpolateServer do
 
   defp proccess_new_point(point, {old_points, config}) do
     prev_point = List.last(old_points)
-    if prev_point != nil and prev_point.x >= point.x do
+    if prev_point != nil and elem(prev_point, 0) >= elem(point, 0) do
       handle_error_input("Следующее значение X должно быть больше предыдущего", {old_points, config})
     end
 
-    new_points = [old_points | point]
+    new_points = old_points ++ [point]
 
     Enum.each(config.methods, fn method ->
       Task.start(fn ->
@@ -61,22 +64,22 @@ defmodule FpLab3.Servers.InterpolateServer do
   end
 
   defp handle_method(method, points, config) do
-    if(method.get_points_enough() >= length(points)) do
+    if(length(points) >= method.get_points_enough()) do
       know_points = Enum.take(points, 0 - method.get_points_enough())
       xs = generate_points(List.first(know_points), List.last(know_points), config.step)
 
       method.interpolate(know_points, xs)
+    else
+      :nothing
     end
-
-    :nothing
   end
 
-  defp generate_points(first_point, last_point, step) do
-    generate_point(first_point, last_point, step, [])
+  defp generate_points({x1, _y1}, {x2, _y2}, step) do
+    generate_point(x1, x2, step, [])
   end
 
-  defp generate_point(first_point, last_point, step, acc) when first_point != last_point do
-    generate_point(first_point + step, last_point, step, [first_point | acc])
+  defp generate_point(current, last, step, acc) when current <= last do
+    generate_point(current + step, last, step, [current | acc])
   end
 
   defp generate_point(_, _, _, acc), do: Enum.reverse(acc)

@@ -17,6 +17,6 @@ defmodule FpLab3.Utils.Printer do
 
   def interpolation_result(method, result) do
     result
-    |> Enum.each(fn point -> IO.puts("#{method}: #{point.x} #{point.y}") end)
+    |> Enum.each(fn {x, y} -> IO.puts("#{method}: #{x} #{y}") end)
   end
 end

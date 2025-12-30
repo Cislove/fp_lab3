@@ -12,8 +12,8 @@ defmodule FpLab3.Application do
   end
 
   defp loop() do
-    :io.setopts(:standard_io, active: true)
-    input = IO.gets("")
+    # :io.setopts(:standard_io, active: false)
+    input = IO.gets("Введите координаты в формате {x y}: ")
 
     InterpolateServer.apply_point(String.trim(input))
     loop()
