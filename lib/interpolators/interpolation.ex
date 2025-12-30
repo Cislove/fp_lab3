@@ -1,4 +1,5 @@
 defmodule FpLab3.Interpolators.Interpolation do
+  @moduledoc false
 
   @callback interpolate(points :: [tuple()], target_point :: number()) :: number()
   @callback get_name() :: binary()

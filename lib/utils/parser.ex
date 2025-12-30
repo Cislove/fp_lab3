@@ -5,20 +5,21 @@ defmodule FpLab3.Utils.Parser do
 
   @separator " "
 
-  @spec parse_input(input:: String.t()) :: {atom(), {any(), any()}} | atom()
+  @spec parse_input(input :: String.t()) :: {atom(), {any(), any()}} | atom()
   def parse_input(input) do
     case String.split(input, @separator) do
       [x, y] ->
         with {x, ""} <- Float.parse(x),
              {y, ""} <- Float.parse(y) do
-
           {:ok, {x, y}}
         else
           _ -> :float_parse_error
         end
 
-      _ -> :error
+      _ ->
+        :error
     end
+
     # require IEx
     # IEx.pry()
   end
@@ -35,9 +36,13 @@ defmodule FpLab3.Utils.Parser do
   end
 
   defp parse_cli_arg("--methods=" <> method, acc) do
-    methods = Enum.map(String.split(String.trim(method), ","),
-                fn module -> Module.concat(["FpLab3", "Interpolators", "#{String.capitalize(module)}Interpolation"])
-                end)
+    methods =
+      Enum.map(
+        String.split(String.trim(method), ","),
+        fn module ->
+          Module.concat(["FpLab3", "Interpolators", "#{String.capitalize(module)}Interpolation"])
+        end
+      )
 
     {:cont, Map.put(acc, :methods, methods)}
   end

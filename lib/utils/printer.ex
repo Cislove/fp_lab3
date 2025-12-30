@@ -1,8 +1,6 @@
 defmodule FpLab3.Utils.Printer do
-
-
-  #TODO: дописать хелп
-  def help() do
+  @moduledoc false
+  def help do
     IO.puts("CLI программа для интерполяции. Используйте параметры для запуска:")
     IO.puts("--method={перечесление методов, либо один метод}. Пример: --method=Lineal,Lagrange")
     IO.puts("--step={шаг}. Пример: --step=0.5")
@@ -10,12 +8,12 @@ defmodule FpLab3.Utils.Printer do
     IO.puts("Указание метода и шага обязательное")
   end
 
-  def start() do
+  def start do
     IO.puts("Выход из приложения через Ctrl + c")
     IO.puts("Введите узлы интерполяции")
   end
 
-  def args_pars_error() do
+  def args_pars_error do
     IO.puts("Неверный формат аргументов, укажите --help при запуске, чтобы получить справку")
   end
 

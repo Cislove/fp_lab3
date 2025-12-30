@@ -1,9 +1,11 @@
 defmodule FpLab3.Servers.OutputServer do
   use GenServer
 
+  @moduledoc false
+
   alias FpLab3.Utils.Printer
 
-  def start_link() do
+  def start_link do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 

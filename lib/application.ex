@@ -1,7 +1,8 @@
 defmodule FpLab3.Application do
-
-  alias FpLab3.Utils.Printer
+  @moduledoc false
   alias FpLab3.Servers.{InterpolateServer, OutputServer}
+  alias FpLab3.Utils.Printer
+
   def start(config) do
     Printer.start()
 
@@ -11,12 +12,11 @@ defmodule FpLab3.Application do
     loop()
   end
 
-  defp loop() do
+  defp loop do
     # :io.setopts(:standard_io, active: false)
     input = IO.gets("")
 
     InterpolateServer.apply_point(String.trim(input))
     loop()
   end
-
 end

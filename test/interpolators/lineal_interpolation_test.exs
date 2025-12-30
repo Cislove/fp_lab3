@@ -19,10 +19,10 @@ defmodule FpLab3.Interpolators.LinealInterpolationTest do
       result = LinealInterpolation.interpolate(points, xs)
 
       assert result == [
-        {0.0, 0.0},
-        {1.0, 2.0},
-        {2.0, 4.0}
-      ]
+               {0.0, 0.0},
+               {1.0, 2.0},
+               {2.0, 4.0}
+             ]
     end
   end
 

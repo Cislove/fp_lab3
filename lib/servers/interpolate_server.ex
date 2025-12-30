@@ -1,8 +1,10 @@
 defmodule FpLab3.Servers.InterpolateServer do
   use GenServer
 
+  @moduledoc false
+
   alias FpLab3.Servers.OutputServer
-  alias FpLab3.Utils.{Parser}
+  alias FpLab3.Utils.Parser
 
   def start_link(config) do
     GenServer.start_link(__MODULE__, {[], config}, name: __MODULE__)
@@ -20,11 +22,14 @@ defmodule FpLab3.Servers.InterpolateServer do
   @impl true
   def handle_cast({:apply_point, point}, {points, config}) do
     case Parser.parse_input(point) do
-      :error -> handle_error_input("Необходимо вводить координаты в формате: {x y}", {points, config})
+      :error ->
+        handle_error_input("Необходимо вводить координаты в формате: {x y}", {points, config})
 
-      :float_parse_error -> handle_error_input("Координаты должны быть числами", {points, config})
+      :float_parse_error ->
+        handle_error_input("Координаты должны быть числами", {points, config})
 
-      {:ok, point} -> proccess_new_point(point, {points, config})
+      {:ok, point} ->
+        proccess_new_point(point, {points, config})
     end
   end
 
@@ -41,27 +46,32 @@ defmodule FpLab3.Servers.InterpolateServer do
 
   defp proccess_new_point(point, {old_points, config}) do
     prev_point = List.last(old_points)
+
     if prev_point != nil and elem(prev_point, 0) >= elem(point, 0) do
-      handle_error_input("Следующее значение X должно быть больше предыдущего", {old_points, config})
+      handle_error_input(
+        "Следующее значение X должно быть больше предыдущего",
+        {old_points, config}
+      )
     end
 
     new_points = old_points ++ [point]
 
-    Enum.each(config.methods, fn method ->
-      Task.start(fn ->
-        case handle_method(method, new_points, config) do
-          :nothing -> :nothing
-
-          result -> send(__MODULE__, {:interpolation_result, method.get_name, result})
-        end
-      end)
-    end)
+    Enum.each(config.methods, &start_task_for_method(&1, new_points, config))
 
     {:noreply, {new_points, config}}
   end
 
+  defp start_task_for_method(method, points, config) do
+    Task.start(fn ->
+      case handle_method(method, points, config) do
+        :nothing -> :nothing
+        result -> send(__MODULE__, {:interpolation_result, method.get_name, result})
+      end
+    end)
+  end
+
   defp handle_method(method, points, config) do
-    if(length(points) >= method.get_points_enough) do
+    if length(points) >= method.get_points_enough do
       know_points = Enum.take(points, 0 - method.get_points_enough)
       xs = generate_points(List.first(know_points), List.last(know_points), config.step)
 
@@ -80,5 +90,4 @@ defmodule FpLab3.Servers.InterpolateServer do
   end
 
   defp generate_point(_, _, _, acc), do: Enum.reverse(acc)
-
 end

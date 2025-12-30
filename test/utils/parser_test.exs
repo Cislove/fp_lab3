@@ -27,6 +27,7 @@ defmodule FpLab3.Utils.ParserTest do
       result = Parser.parse_cli_args(args)
 
       assert result.step == 0.5
+
       assert result.methods == [
                FpLab3.Interpolators.LinealInterpolation,
                FpLab3.Interpolators.LagrangeInterpolation
